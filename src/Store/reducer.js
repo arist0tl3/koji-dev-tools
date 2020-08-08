@@ -2,6 +2,21 @@ import * as immutable from 'object-path-immutable';
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'SET_POST_MESSAGE':
+      return {
+        ...state,
+        postMessage: action.payload,
+      };
+    case 'SET_ACTIVE_PICKER':
+      return {
+        ...state,
+        activePicker: action.payload,
+      };
+    case 'SET_ACTIVE_VCC_PATH':
+      return {
+        ...state,
+        activeVCCPath: action.payload,
+      };
     case 'SET_IS_REMIXING':
       return {
         ...state,

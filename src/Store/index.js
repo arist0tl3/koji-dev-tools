@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import reducer from './reducer'
 
 const initialState = {
+  activePicker: null,
+  activeVCCPath: null,
   isRemixing: false,
-  username: 'diddy',
+  postMessage() {},
   profileImage: 'https://jiro-profile-pictures.imgix.net/4784537361_1596432327276.com/a-/AOh14GjTFPyKDB0LBPOJwNYMwui4lPkNvHkru3bAwP7_lA?w=126',
   tags: 'something, really, cool',
+  username: 'diddy',
   vccValues: {},
 };
 

@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import * as immutable from 'object-path-immutable';
 
 import Controls from './Controls';
 import Logs from './Logs';
 import Overlay from './Overlay';
+import Picker from './Picker';
 
 import { Context } from '../../Store';
 
@@ -61,6 +63,7 @@ const DevTools = ({ url }) => {
 
       // Handle the init value (dev needs to add custom function to template)
       if (Object.keys(vccValues).length) {
+        console.log('v', vccValues);
         return dispatch({
           type: 'SET_VCC_VALUES',
           payload: vccValues,
@@ -70,7 +73,7 @@ const DevTools = ({ url }) => {
       if (_type === 'KojiPreview.SetValue' && newValue && path.length) {
         // If the template triggered a set value, we just return the value
         // as if it were written
-        postMessage({
+        state.postMessage({
           event: 'KojiPreview.DidChangeVcc',
           path,
           newValue,
@@ -86,26 +89,61 @@ const DevTools = ({ url }) => {
         });
       }
 
+      if (_type === 'KojiPreview.PresentControl' && path.length) {
+        const editor = state.vccValues['@@editor'];
+        const { fields = [] } = editor.find(({ key }) => key === path[0]);
+        
+        if (!fields.length) return;
+
+        const field = fields.find(({ key }) => key === path[1]);
+        if (!field) return;
+
+        const { type } = field;
+
+        if (['image'].includes(type)) {
+          dispatch({
+            type: 'SET_ACTIVE_PICKER',
+            payload: 'image',
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_PATH',
+            payload: path,
+          });
+        }
+
+        // const type = immutable.get(
+        //   state.vccValues['@@editor'],
+        //   path.join('.'),
+        // );
+
+        // console.log('type', type);
+      }
+
       return setLogs(oldLogs => [...oldLogs, data]);
     };
 
     window.addEventListener('message', receiveMessage, false);
 
     return () => window.removeEventListener('message', receiveMessage);
-  }, []);
+  }, [state.vccValues]);
 
-  const postMessage = (message) => {
-    if (iFrameRef && iFrameRef.current && iFrameRef.current.contentWindow) {
-      iFrameRef.current.contentWindow.postMessage(message, '*');
-    } else {
-      console.error('Unable to communicate with iFrame');
-    }
-  };
+  useEffect(() => {
+    dispatch({
+      type: 'SET_POST_MESSAGE',
+      payload: (message) => {
+        if (iFrameRef && iFrameRef.current && iFrameRef.current.contentWindow) {
+          iFrameRef.current.contentWindow.postMessage(message, '*');
+        } else {
+          console.error('Unable to communicate with iFrame');
+        }
+      },
+    })
+  }, []);
 
   return (
     <Tools>
       <Panel>
-        <Controls postMessage={postMessage} />
+        <Controls />
       </Panel>
       <PlayerWrapper>
         <Overlay />
@@ -119,6 +157,7 @@ const DevTools = ({ url }) => {
       </PlayerWrapper>
       <Panel>
         <Logs logs={logs} />
+        <Picker />
       </Panel>
     </Tools>
   );
