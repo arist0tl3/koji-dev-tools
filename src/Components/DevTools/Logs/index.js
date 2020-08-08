@@ -7,7 +7,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 100%;
+  height: 50%;
   width: 100%;
   overflow: auto;
 
@@ -21,8 +21,6 @@ const Container = styled.div`
 
 const Logs = ({ logs }) => {
   const containerRef = useRef(null);
-
-  console.log('logs', logs);
 
   useEffect(() => {
     if (containerRef && containerRef.current) {
