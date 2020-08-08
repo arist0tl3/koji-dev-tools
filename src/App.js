@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
+import DevTools from './Components/DevTools';
+import Welcome from './Components/Welcome';
+
+import Store from './Store'
+
 import './App.css';
 
-function App() {
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background: #333333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const App = () => {
+  const [url, setURL] = useState('https://8080-3adea148-dffe-4b3f-86ec-3748e1a3fffb.koji-staging.com/');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Store>
+      <Container>
+        {
+          !url &&
+          <Welcome setURL={setURL} />
+        }
+        {
+          url &&
+          <DevTools url={url} />
+        }
+      </Container>
+    </Store>
   );
-}
+};
 
 export default App;
