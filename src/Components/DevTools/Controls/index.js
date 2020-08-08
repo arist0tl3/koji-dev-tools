@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 
@@ -20,12 +19,12 @@ const StyledDivider = styled(Divider)`
   background: #ffffff;
 `
 
-const Controls = ({ postMessage }) => {
+const Controls = () => {
   const [state] = useContext(Context);
 
   return (
     <Wrapper>
-      <RemixSwitch postMessage={postMessage} />
+      <RemixSwitch />
       <StyledDivider />
       {
         !state.isRemixing &&
@@ -37,14 +36,6 @@ const Controls = ({ postMessage }) => {
       }
     </Wrapper>
   );
-};
-
-Controls.propTypes = {
-  postMessage: PropTypes.func,
-};
-
-Controls.defaultProps = {
-  postMessage() { },
 };
 
 export default Controls;

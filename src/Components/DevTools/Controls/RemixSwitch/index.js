@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Switch } from 'antd';
 import styled from 'styled-components';
 import { Context } from '../../../../Store';
@@ -16,7 +15,7 @@ const Label = styled.div`
   color: #ffffff;
 `;
 
-const RemixSwitch = ({ postMessage }) => {
+const RemixSwitch = () => {
   const [state, dispatch] = useContext(Context);
 
   const setRemixing = () => {
@@ -24,7 +23,7 @@ const RemixSwitch = ({ postMessage }) => {
   };
 
   useEffect(() => {
-    postMessage({
+    state.postMessage({
       event: 'KojiPreview.IsRemixing',
       isRemixing: state.isRemixing,
       editorAttributes: {},
@@ -37,14 +36,6 @@ const RemixSwitch = ({ postMessage }) => {
       <Switch checked={state.isRemixing} onChange={setRemixing} />
     </Wrapper>
   )
-};
-
-RemixSwitch.propTypes = {
-  postMessage: PropTypes.func,
-};
-
-RemixSwitch.defaultProps = {
-  postMessage() {},
 };
 
 export default RemixSwitch;
