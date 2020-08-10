@@ -12,10 +12,8 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-console.log('c', chromeDark);
-
 const Inspector = () => {
-  const [state, dispatch] = useContext(Context);
+  const [state] = useContext(Context);
 
   if (!state.vccValues['@@editor']) return null;
 

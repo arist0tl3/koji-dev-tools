@@ -37,7 +37,7 @@ const RemixSwitch = () => {
       isRemixing: state.isRemixing,
       editorAttributes: {},
     });
-  }, [state.isRemixing]);
+  }, [state]);
 
   return (
     <Container>

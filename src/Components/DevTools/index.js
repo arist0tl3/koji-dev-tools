@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import * as immutable from 'object-path-immutable';
 
 import Controls from './Controls';
 import Logs from './Logs';
@@ -50,7 +49,7 @@ const DevTools = () => {
     const receiveMessage = ({ data = {} }) => {
       console.log('DATA', data);
       const {
-        attributes,
+        // attributes,
         vccValues = {},
         newValue,
         path,
@@ -58,7 +57,7 @@ const DevTools = () => {
         _type,
       } = data;
 
-      // Don't handle react devtools
+      // Don't handle react-devtools
       if (source.includes('react-devtools')) return;
 
       // Handle the init value (dev needs to add custom function to template)

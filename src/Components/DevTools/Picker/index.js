@@ -56,7 +56,7 @@ const Picker = () => {
           {
             sources.map((src) => (
               <Image key={src} onClick={() => handleImageClick(src)}>
-                <img src={src} />
+                <img alt={'placeholder'} src={src} />
               </Image>
             ))
           }
