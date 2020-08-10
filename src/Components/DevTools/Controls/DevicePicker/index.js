@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Select } from 'antd';
 import styled from 'styled-components';
 
@@ -31,41 +31,31 @@ const StyledSelect = styled(Select)`
   }
 `;
 
-const RemixSwitch = () => {
+const DevicePicker = () => {
   const [state, dispatch] = useContext(Context);
 
-  const handleChange = (mode) => {
-    const payload = mode === 'remix';
+  const handleChange = (payload) => {
     dispatch({
-      type: 'SET_IS_REMIXING',
+      type: 'SET_DEVICE_MODE',
       payload,
     });
   };
 
-  // Listen for changes so we can update the template
-  useEffect(() => {
-    state.postMessage({
-      event: 'KojiPreview.IsRemixing',
-      isRemixing: state.isRemixing,
-      editorAttributes: {},
-    });
-  }, [state]);
-
   return (
     <Container>
       <InputWrapper>
-        <Label>{'Mode'}</Label>
+        <Label>{'Device'}</Label>
         <StyledSelect
           bordered={false}
+          defaultValue={state.deviceMode}
           dropdownStyle={{
             background: '#111111',
             color: '#ffffff',
           }}
           onChange={handleChange}
-          value={state.isRemixing ? 'remix' :'preview'}
         >
-          <Select.Option value={'preview'}>{'Preview'}</Select.Option>
-          <Select.Option value={'remix'}>{'Remix'}</Select.Option>
+          <Select.Option value={'desktop'}>{'Desktop'}</Select.Option>
+          <Select.Option value={'iPhone6'}>{'iPhone 6'}</Select.Option>
         </StyledSelect>
       </InputWrapper>
     </Container>
@@ -73,4 +63,4 @@ const RemixSwitch = () => {
   )
 };
 
-export default RemixSwitch;
+export default DevicePicker;

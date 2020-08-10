@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Divider } from 'antd';
 
 import AppMetadata from './AppMetadata';
+import DevicePicker from './DevicePicker';
+import Header from '../../Common/Header';
 import Inspector from './Inspector';
 import RemixSwitch from './RemixSwitch';
 
@@ -11,7 +13,7 @@ import { Context } from '../../../Store';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 `;
 
@@ -24,7 +26,9 @@ const Controls = () => {
 
   return (
     <Wrapper>
+      <Header>{'Template Options'}</Header>
       <RemixSwitch />
+      <DevicePicker />
       <StyledDivider />
       {
         !state.isRemixing &&

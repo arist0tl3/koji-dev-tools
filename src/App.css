@@ -1,1 +1,16 @@
 @import '~antd/dist/antd.css';
+
+.ant-select-item-option {
+  background: #111111;
+  color: #999999;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: #111111;
+  color: #ffffff;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: #111111;
+  color: #ffffff;
+}

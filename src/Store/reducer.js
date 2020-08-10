@@ -7,6 +7,11 @@ const reducer = (state, action) => {
         ...state,
         appURL: action.payload,
       };
+    case 'SET_DEVICE_MODE':
+      return {
+        ...state,
+        deviceMode: action.payload,
+      };
     case 'SET_POST_MESSAGE':
       return {
         ...state,

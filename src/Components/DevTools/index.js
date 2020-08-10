@@ -26,11 +26,31 @@ const Panel = styled.div`
   overflow: hidden;
 `;
 
+const PlayerContainer = styled.div`
+  width: 700px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const PlayerWrapper = styled.div`
   position: relative;
-  width: 100%;
-  max-width: 700px;
-  height: 100%;
+
+  ${({ style: { mode } }) => {
+    if (mode === 'desktop') {
+      return `
+        width: 100%;
+        height: 100%;
+        max-width: 700px;
+      `;
+    }
+
+    return `
+      width: 375px;
+      height: 667px;
+    `;
+  }}
 `;
 
 const Player = styled.iframe`
@@ -105,7 +125,7 @@ const DevTools = () => {
 
         const editor = state.vccValues['@@editor'] || [];
         const scope = editor.find(({ key }) => key === path[0]);
-        
+
         if (!scope) return;
 
         const { fields = [] } = scope;
@@ -188,16 +208,18 @@ const DevTools = () => {
       <Panel>
         <Controls />
       </Panel>
-      <PlayerWrapper>
-        <Overlay />
-        <Player
-          crossOrigin={'anonymous'}
-          height={700}
-          ref={iFrameRef}
-          src={state.appURL}
-          width={700}
-        />
-      </PlayerWrapper>
+      <PlayerContainer>
+        <PlayerWrapper style={{ mode: state.deviceMode }}>
+          <Overlay />
+          <Player
+            crossOrigin={'anonymous'}
+            height={700}
+            ref={iFrameRef}
+            src={state.appURL}
+            width={700}
+          />
+        </PlayerWrapper>
+      </PlayerContainer>
       <Panel>
         <Logs logs={logs} />
         <Picker />
