@@ -1,6 +1,13 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+
+import RightArrowIcon from '../../../SVGS/RightArrow';
+import EyeIcon from '../../../SVGS/Eye';
 import KojiLogo from '../../../SVGS/KojiLogo';
+import LikeIcon from '../../../SVGS/Like';
+import RemixIcon from '../../../SVGS/Remix';
+import ShareIcon from '../../../SVGS/Share';
+
 import { Context } from '../../../Store';
 
 const Container = styled.div`
@@ -112,13 +119,212 @@ const Tag = styled.div`
   border-radius: 4px;
 `;
 
+const ActionOverlay = styled.div`
+  z-index: 5;
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  transform: translateZ(0px);
+`;
+
+const LikeAction = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 1;
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  position: relative;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(45, 47, 48);
+  padding: 8px;
+  border-radius: 50%;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: #ffffff;
+  }
+`;
+
+const ShareAction = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 1;
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(45, 47, 48);
+  padding: 7px;
+  border-radius: 50%;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transform: scaleX(-1);
+    fill: #ffffff;
+  }
+`;
+
+const RemixAction = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0px;
+`;
+
+const RemixActionIcon = styled.div`
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(0, 122, 255);
+  will-change: transform;
+  padding: 8px;
+  border-radius: 50%;
+  // animation: 1.4s ease 0s infinite normal none running dxxvgs;
+
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+`;
+
+const ActionLabel = styled.div`
+  font-weight: 500;
+  font-size: 14px;
+  text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 4px;
+`;
+
+const ActionStrip = styled.div`
+  position: absolute;
+  z-index: 5;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+`;
+
+const ModeAction = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+`;
+
+const ModeActionIcon = styled.div`
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(45, 47, 48);
+  padding: 8px;
+  border-radius: 50%;
+
+  svg {
+    fill: #ffffff;
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(rgba(0, 0, 0, 0.8) 0px 0px 6px);
+  }
+`;
+
+const SaveAction = styled.div`
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+const SaveActionIcon = styled.div`
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgb(0, 122, 255);
+  padding: 8px;
+  border-radius: 50%;
+
+  svg {
+    fill: #ffffff;
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(rgba(0, 0, 0, 0.8) 0px 0px 6px);
+  }
+`;
+
 const Overlay = () => {
   const [state] = useContext(Context);
 
   if (state.isRemixing) {
     return (
       <Container>
-
+        <ActionStrip>
+          <ModeAction>
+            <ModeActionIcon>
+              <EyeIcon />
+            </ModeActionIcon>
+          </ModeAction>
+          <SaveAction>
+            <SaveActionIcon>
+              <RightArrowIcon />
+            </SaveActionIcon>
+          </SaveAction>
+        </ActionStrip>
       </Container>
     );
   }
@@ -145,6 +351,22 @@ const Overlay = () => {
           </Caption>
         </Details>
       </MetadataOverlay>
+      <ActionOverlay>
+        <LikeAction>
+          <LikeIcon />
+        </LikeAction>
+        <ShareAction>
+          <ShareIcon />
+        </ShareAction>
+        <RemixAction>
+          <RemixActionIcon>
+            <RemixIcon />
+          </RemixActionIcon>
+          <ActionLabel>
+            <span>{'Remix'}</span>
+          </ActionLabel>
+        </RemixAction>
+      </ActionOverlay>
     </Container>
   );
 };
