@@ -44,6 +44,8 @@ const ImagePicker = () => {
   };
 
   useEffect(() => {
+    if (state.activeVCCType !== 'text') return;
+    
     if (!value && state.activeVCCValue && !init) {
       setValue(state.activeVCCValue);
       setInit(true);
@@ -74,11 +76,14 @@ const ImagePicker = () => {
       <CloseButton onClick={handleVCCClose}>
         <CloseIcon />
       </CloseButton>
-      <Input
-        onChange={(e) => setValue(e.target.value)}
-        type={'text'}
-        value={value}
-      />
+      {
+        state.activeVCCType === 'text' &&
+        <Input
+          onChange={(e) => setValue(e.target.value)}
+          type={'text'}
+          value={value}
+        />
+      }
     </TextPickerWrapper>
   );
 };
