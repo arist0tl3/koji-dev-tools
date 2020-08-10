@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import DevTools from './Components/DevTools';
-import Welcome from './Components/Welcome';
+import Router from './Components/Router';
 
 import Store from './Store'
 
@@ -18,23 +17,12 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const App = () => {
-  const [url, setURL] = useState('https://8080-3adea148-dffe-4b3f-86ec-3748e1a3fffb.koji-staging.com/');
-
-  return (
-    <Store>
-      <Container>
-        {
-          !url &&
-          <Welcome setURL={setURL} />
-        }
-        {
-          url &&
-          <DevTools url={url} />
-        }
-      </Container>
-    </Store>
-  );
-};
+const App = () => (
+  <Store>
+    <Container>
+      <Router />
+    </Container>
+  </Store>
+);
 
 export default App;

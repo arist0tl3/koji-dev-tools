@@ -40,7 +40,7 @@ const Player = styled.iframe`
   outline: 0;
 `;
 
-const DevTools = ({ url }) => {
+const DevTools = () => {
   const [state, dispatch] = useContext(Context);
 
   const iFrameRef = useRef(null);
@@ -64,9 +64,17 @@ const DevTools = ({ url }) => {
       // Handle the init value (dev needs to add custom function to template)
       if (Object.keys(vccValues).length) {
         console.log('v', vccValues);
-        return dispatch({
+        dispatch({
           type: 'SET_VCC_VALUES',
           payload: vccValues,
+        });
+
+        // Toggle the remix mode on by default
+        // Note: We can't just set the init state bc the template expects
+        // a message
+        return dispatch({
+          type: 'SET_IS_REMIXING',
+          payload: true,
         });
       }
 
@@ -90,26 +98,25 @@ const DevTools = ({ url }) => {
       }
 
       if (_type === 'KojiPreview.PresentControl' && path.length) {
+        console.log('s', state.vccValues);
         const editor = state.vccValues['@@editor'];
-        const { fields = [] } = editor.find(({ key }) => key === path[0]);
-        
-        if (!fields.length) return;
+        const fileContainingPath = state.vccValues[path[0]]['@@PATH'];
+        console.log('f', fileContainingPath);
 
-        const field = fields.find(({ key }) => key === path[1]);
-        if (!field) return;
 
-        const { type } = field;
 
-        if (['image'].includes(type)) {
-          dispatch({
-            type: 'SET_ACTIVE_PICKER',
-            payload: 'image',
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_PATH',
-            payload: path,
-          });
-        }
+        // const { type } = field;
+
+        //   if (['image'].includes(type)) {
+        //     dispatch({
+        //       type: 'SET_ACTIVE_PICKER',
+        //       payload: 'image',
+        //     });
+        //     dispatch({
+        //       type: 'SET_ACTIVE_VCC_PATH',
+        //       payload: path,
+        //     });
+        //   }
 
         // const type = immutable.get(
         //   state.vccValues['@@editor'],
@@ -151,7 +158,7 @@ const DevTools = ({ url }) => {
           crossOrigin={'anonymous'}
           height={700}
           ref={iFrameRef}
-          src={'http://0.0.0.0:8080/'}
+          src={state.appURL}
           width={700}
         />
       </PlayerWrapper>

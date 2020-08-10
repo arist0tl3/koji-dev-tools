@@ -2,6 +2,11 @@ import * as immutable from 'object-path-immutable';
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'SET_APP_URL':
+      return {
+        ...state,
+        appURL: action.payload,
+      };
     case 'SET_POST_MESSAGE':
       return {
         ...state,

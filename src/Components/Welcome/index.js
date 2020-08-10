@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import ArrowIcon from '../../SVGS/Arrow';
 
-const Wrapper = styled.div`
-
-`;
+import { Context } from '../../Store';
 
 const Title = styled.h1`
   font-size: min(6rem, 12vw);
@@ -39,22 +37,27 @@ const Button = styled.button`
   }
 `;
 
-const Welcome = ({ setURL }) => {
+const Welcome = () => {
+  const [, dispatch] = useContext(Context);
+
   const [value, setValue] = useState('');
 
   const isValid = (url) => {
     if (!url || url === '') return false;
-    if (!url.includes('koji-staging.com')) return false;
+    // if (!url.includes('koji-staging.com')) return false;
     return true;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setURL(value);
+    dispatch({
+      type: 'SET_APP_URL',
+      payload: value,
+    })
   };
 
   return (
-    <Wrapper>
+    <div>
       <Title>{'koji dev tools'}</Title>
       <Form onSubmit={handleSubmit}>
         <Input
@@ -72,7 +75,7 @@ const Welcome = ({ setURL }) => {
           <ArrowIcon />
         </Button>
       </Form>
-    </Wrapper>
+    </div>
   );
 };
 
