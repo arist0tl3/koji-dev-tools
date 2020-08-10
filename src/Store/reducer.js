@@ -12,10 +12,27 @@ const reducer = (state, action) => {
         ...state,
         postMessage: action.payload,
       };
-    case 'SET_ACTIVE_PICKER':
+    case 'RESET_VCC':
       return {
         ...state,
-        activePicker: action.payload,
+        activeVCCName: null,
+        activeVCCPath: null,
+        activeVCCType: null,
+      };
+    case 'SET_ACTIVE_VCC_TYPE':
+      return {
+        ...state,
+        activeVCCType: action.payload,
+      };
+    case 'SET_ACTIVE_VCC_NAME':
+      return {
+        ...state,
+        activeVCCName: action.payload,
+      };
+    case 'SET_ACTIVE_VCC_VALUE':
+      return {
+        ...state,
+        activeVCCValue: action.payload,
       };
     case 'SET_ACTIVE_VCC_PATH':
       return {

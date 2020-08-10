@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import * as immutable from 'object-path-immutable';
 
 import Controls from './Controls';
 import Logs from './Logs';
@@ -98,31 +99,67 @@ const DevTools = () => {
 
       if (_type === 'KojiPreview.PresentControl' && path.length) {
         console.log('s', state.vccValues);
-        const editor = state.vccValues['@@editor'];
-        const fileContainingPath = state.vccValues[path[0]]['@@PATH'];
-        console.log('f', fileContainingPath);
 
+        const currentValue = immutable.get(state.vccValues, path.join('.'));
+        console.log('c', currentValue);
 
+        const editor = state.vccValues['@@editor'] || [];
+        const scope = editor.find(({ key }) => key === path[0]);
+        
+        if (!scope) return;
 
-        // const { type } = field;
+        const { fields = [] } = scope;
+        const field = fields.find(({ key }) => key === path[1]);
+        if (!field) return;
 
-        //   if (['image'].includes(type)) {
-        //     dispatch({
-        //       type: 'SET_ACTIVE_PICKER',
-        //       payload: 'image',
-        //     });
-        //     dispatch({
-        //       type: 'SET_ACTIVE_VCC_PATH',
-        //       payload: path,
-        //     });
-        //   }
+        const { name, type } = field;
+        if (!type) return;
 
-        // const type = immutable.get(
-        //   state.vccValues['@@editor'],
-        //   path.join('.'),
-        // );
+        if (type.endsWith('[]')) {
+          console.log('array');
+          return;
+        }
 
-        // console.log('type', type);
+        if ((type.includes('<') && type.endsWith('>'))) {
+          console.log('object');
+          return;
+        }
+
+        if (['image', 'textarea', 'sound', 'color', 'boolean', 'range', 'select', 'secret', 'file'].includes(type)) {
+          dispatch({
+            type: 'SET_ACTIVE_VCC_TYPE',
+            payload: type,
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_PATH',
+            payload: path,
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_NAME',
+            payload: name,
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_VALUE',
+            payload: currentValue,
+          });
+        } else {
+          dispatch({
+            type: 'SET_ACTIVE_VCC_TYPE',
+            payload: 'text',
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_PATH',
+            payload: path,
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_NAME',
+            payload: name,
+          });
+          dispatch({
+            type: 'SET_ACTIVE_VCC_VALUE',
+            payload: currentValue,
+          });
+        }
       }
 
       return setLogs(oldLogs => [...oldLogs, data]);
@@ -131,7 +168,7 @@ const DevTools = () => {
     window.addEventListener('message', receiveMessage, false);
 
     return () => window.removeEventListener('message', receiveMessage);
-  }, [state.vccValues]);
+  }, [dispatch, state]);
 
   useEffect(() => {
     dispatch({
@@ -144,7 +181,7 @@ const DevTools = () => {
         }
       },
     })
-  }, []);
+  }, [dispatch]);
 
   return (
     <Tools>

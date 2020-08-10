@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import reducer from './reducer'
 
 const initialState = {
-  activePicker: null,
+  activeVCCName: null,
   activeVCCPath: null,
+  activeVCCType: null,
+  activeVCCValue: null,
   appURL: 'http://0.0.0.0:8080/',
   isRemixing: false,
   postMessage() {},

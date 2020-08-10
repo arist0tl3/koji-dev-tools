@@ -8,7 +8,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 50%;
 `;
 
 const LogsContainer = styled.div`
@@ -16,7 +16,7 @@ const LogsContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  height: calc(50% - 24px);
+  height: calc(100% - 24px);
   width: 100%;
   overflow: auto;
 
