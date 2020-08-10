@@ -41,7 +41,6 @@ const Picker = () => {
   ];
 
   const handleImageClick = (src) => {
-    console.log('s', state.activeVCCPath, src);
     state.postMessage({
       event: 'KojiPreview.DidChangeVcc',
       path: state.activeVCCPath,

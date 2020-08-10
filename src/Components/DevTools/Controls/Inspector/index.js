@@ -2,17 +2,22 @@ import React, { useContext } from 'react';
 import { chromeDark, ObjectInspector } from 'react-inspector';
 import styled from 'styled-components';
 
+import Header from '../../../Common/Header';
+
 import { Context } from '../../../../Store';
 
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
+  flex-direction: column;
 `;
 
 console.log('c', chromeDark);
 
 const Inspector = () => {
   const [state, dispatch] = useContext(Context);
+
+  if (!state.vccValues['@@editor']) return null;
 
   const keys = state.vccValues['@@editor'].map(({ key }) => key);
   const tree = {};
@@ -22,6 +27,7 @@ const Inspector = () => {
 
   return (
     <Wrapper>
+      <Header>{'VCC Value Explorer'}</Header>
       <ObjectInspector
         data={tree}
         theme={{

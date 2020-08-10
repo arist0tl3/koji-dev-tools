@@ -2,12 +2,21 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import Header from '../../Common/Header';
+
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
+const LogsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 50%;
+  height: calc(50% - 24px);
   width: 100%;
   overflow: auto;
 
@@ -29,12 +38,15 @@ const Logs = ({ logs }) => {
   }, [logs]);
 
   return (
-    <Container
-      ref={containerRef}
+    <Container>
+      <Header>{'Message Logs'}</Header>
+      <LogsContainer
+        ref={containerRef}
       >
-      {logs.map((item, idx) => (
-        <div key={idx}>{JSON.stringify(item, null, 2)}</div>
-      ))}
+        {logs.map((item, idx) => (
+          <div key={idx}>{JSON.stringify(item, null, 2)}</div>
+        ))}
+      </LogsContainer>
     </Container>
   );
 };

@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import { Input } from 'antd';
 import styled from 'styled-components';
+
+import Header from '../../../Common/Header';
+
 import { Context } from '../../../../Store';
 
 const Container = styled.div`
@@ -58,6 +61,7 @@ const AppMetadata = () => {
 
   return (
     <Container>
+      <Header>{'App Metadata'}</Header>
       <InputWrapper>
         <Label>{'Profile URL'}</Label>
         <StyledInput onChange={setProfileImage} value={state.profileImage} />

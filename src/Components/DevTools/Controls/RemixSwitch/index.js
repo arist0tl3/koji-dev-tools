@@ -1,9 +1,18 @@
 import React, { useContext, useEffect } from 'react';
 import { Switch } from 'antd';
 import styled from 'styled-components';
+
+import Header from '../../../Common/Header';
+
 import { Context } from '../../../../Store';
 
-const Wrapper = styled.div`
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,10 +40,14 @@ const RemixSwitch = () => {
   }, [state.isRemixing]);
 
   return (
-    <Wrapper>
-      <Label>{'Remix Mode'}</Label>
-      <Switch checked={state.isRemixing} onChange={setRemixing} />
-    </Wrapper>
+    <Container>
+      <Header>{'Template Mode'}</Header>
+      <InputWrapper>
+        <Label>{'Is Remixing'}</Label>
+        <Switch checked={state.isRemixing} onChange={setRemixing} />
+      </InputWrapper>
+    </Container>
+
   )
 };
 
