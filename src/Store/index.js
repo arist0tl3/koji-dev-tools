@@ -12,7 +12,7 @@ const initialState = {
   isRemixing: false,
   postMessage() {},
   profileImage: 'https://jiro-profile-pictures.imgix.net/4784537361_1596432327276.com/a-/AOh14GjTFPyKDB0LBPOJwNYMwui4lPkNvHkru3bAwP7_lA?w=126',
-  tags: 'something, really, cool',
+  tags: 'these, are, tags',
   username: 'diddy',
   vccValues: {},
 };
