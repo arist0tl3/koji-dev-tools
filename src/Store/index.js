@@ -7,7 +7,7 @@ const initialState = {
   activeVCCPath: null,
   activeVCCType: null,
   activeVCCValue: null,
-  appURL: 'http://0.0.0.0:8080/',
+  appURL: null,
   deviceMode: 'desktop',
   isRemixing: false,
   postMessage() {},
