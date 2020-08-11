@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ImagePicker from './ImagePicker';
-import TextPicker from './TextPicker';
+import ImageVCC from './ImageVCC';
+import TextVCC from './TextVCC';
 
 const Container = styled.div`
   display: flex;
@@ -14,11 +14,11 @@ const Container = styled.div`
   overflow: hidden;;
 `;
 
-const Picker = () => (
+const VCCRouter = () => (
   <Container>
-    <ImagePicker />
-    <TextPicker />
+    <ImageVCC />
+    <TextVCC />
   </Container>
 );
 
-export default Picker;
+export default VCCRouter;

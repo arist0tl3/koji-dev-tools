@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as immutable from 'object-path-immutable';
+import isNumber from '../../utils/isNumber';
 
 import Controls from './Controls';
 import Logs from './Logs';
 import Overlay from './Overlay';
-import Picker from './Picker';
+import VCCRouter from './VCC';
 
 import { Context } from '../../Store';
 
@@ -60,11 +61,33 @@ const Player = styled.iframe`
   outline: 0;
 `;
 
+const supportedVCCTypes = ['text', 'textarea', 'image'];
+
 const DevTools = () => {
   const [state, dispatch] = useContext(Context);
 
   const iFrameRef = useRef(null);
   const [logs, setLogs] = useState([]);
+
+  const setVCC = ({ type, path, currentValue, name }) => {
+    console.log('SETTING', type, path, currentValue, name);
+    dispatch({
+      type: 'SET_ACTIVE_VCC_TYPE',
+      payload: type,
+    });
+    dispatch({
+      type: 'SET_ACTIVE_VCC_PATH',
+      payload: path,
+    });
+    dispatch({
+      type: 'SET_ACTIVE_VCC_NAME',
+      payload: name,
+    });
+    dispatch({
+      type: 'SET_ACTIVE_VCC_VALUE',
+      payload: currentValue,
+    });
+  };
 
   useEffect(() => {
     const receiveMessage = ({ data = {} }) => {
@@ -118,68 +141,107 @@ const DevTools = () => {
       }
 
       if (_type === 'KojiPreview.PresentControl' && path.length) {
-        console.log('s', state.vccValues);
-
+        // Get the current value so we can populate the input
         const currentValue = immutable.get(state.vccValues, path.join('.'));
-        console.log('c', currentValue);
+
+        // Attempt to drill down to the scope/field
+        const [scopeKey, fieldKey, ...rest] = path;
 
         const editor = state.vccValues['@@editor'] || [];
-        const scope = editor.find(({ key }) => key === path[0]);
+        const scope = editor.find(({ key }) => key === scopeKey);
 
         if (!scope) return;
 
         const { fields = [] } = scope;
-        const field = fields.find(({ key }) => key === path[1]);
+        const field = fields.find(({ key }) => key === fieldKey);
         if (!field) return;
 
-        const { name, type } = field;
-        if (!type) return;
+        // Take the currentType and attempt to resolve nested paths
+        let { name, type: currentType } = field;
 
-        if (type.endsWith('[]')) {
-          console.log('array');
-          return;
-        }
+        rest.forEach((pathElem) => {
+          // If the pathElem is a number, we assume we are looking at an array
+          if (isNumber(pathElem)) {
+            // Are we looking at an object?
+            if (currentType.includes('<')) {
+              const objectType = currentType.split('<')[1].slice(0, -1);
+              if (field.typeOptions && field.typeOptions[objectType]) {
+                currentType = field.typeOptions[objectType];
+              }
+            } else {
+              // If we are looking at an array of type, then we can just strip
+              // the brackets, e.g., image[]
+              currentType = currentType.splice(0, -2);
+            }
+          } else {
+            // Continue into the object and look for a type
+            if (currentType[pathElem] && currentType[pathElem].type) {
+              currentType = currentType[pathElem].type;
+            }
+          }
+        });
 
-        if ((type.includes('<') && type.endsWith('>'))) {
-          console.log('object');
-          return;
-        }
-
-        if (['image', 'textarea', 'sound', 'color', 'boolean', 'range', 'select', 'secret', 'file'].includes(type)) {
-          dispatch({
-            type: 'SET_ACTIVE_VCC_TYPE',
-            payload: type,
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_PATH',
-            payload: path,
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_NAME',
-            payload: name,
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_VALUE',
-            payload: currentValue,
+        // If it is a supported VCC type, we can render it
+        // otherwise, we'll just render a text input
+        if (supportedVCCTypes.includes(currentType)) {
+          setVCC({
+            type: currentType,
+            name,
+            currentValue,
+            path,
           });
         } else {
-          dispatch({
-            type: 'SET_ACTIVE_VCC_TYPE',
-            payload: 'text',
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_PATH',
-            payload: path,
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_NAME',
-            payload: name,
-          });
-          dispatch({
-            type: 'SET_ACTIVE_VCC_VALUE',
-            payload: currentValue,
+          setVCC({
+            type: 'text',
+            name,
+            currentValue,
+            path,
           });
         }
+
+
+
+
+        // const { name, type } = field;
+        // if (!type) return;
+
+        // console.log('TYPE', type);
+
+        // if (type.endsWith('[]')) {
+        //   const arrayOf = type.slice(0, -2);
+        //   console.log('arrayOf', arrayOf);
+        //   if ((arrayOf.includes('<') && arrayOf.endsWith('>'))) {
+        //     const objectType = arrayOf.split('<')[1].slice(0, -1);
+        //     console.log('objectType', objectType);
+        //   }
+        //   return;
+        // }
+
+        // if ((type.includes('<') && type.endsWith('>'))) {
+        //   console.log('object');
+        //   return;
+        // }
+
+        // if (['image', 'textarea', 'sound', 'color', 'boolean', 'range', 'select', 'secret', 'file'].includes(type)) {
+          
+        // } else {
+        //   dispatch({
+        //     type: 'SET_ACTIVE_VCC_TYPE',
+        //     payload: 'text',
+        //   });
+        //   dispatch({
+        //     type: 'SET_ACTIVE_VCC_PATH',
+        //     payload: path,
+        //   });
+        //   dispatch({
+        //     type: 'SET_ACTIVE_VCC_NAME',
+        //     payload: name,
+        //   });
+        //   dispatch({
+        //     type: 'SET_ACTIVE_VCC_VALUE',
+        //     payload: currentValue,
+        //   });
+        // }
       }
 
       return setLogs(oldLogs => [...oldLogs, data]);
@@ -222,7 +284,7 @@ const DevTools = () => {
       </PlayerContainer>
       <Panel>
         <Logs logs={logs} />
-        <Picker />
+        <VCCRouter />
       </Panel>
     </Tools>
   );

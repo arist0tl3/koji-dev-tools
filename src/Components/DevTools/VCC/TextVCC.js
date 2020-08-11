@@ -31,7 +31,7 @@ const CloseButton = styled.div`
   }
 `;
 
-const ImagePicker = () => {
+const TextPicker = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
   const [init, setInit] = useState(false);
@@ -45,10 +45,11 @@ const ImagePicker = () => {
 
   useEffect(() => {
     if (state.activeVCCType !== 'text') return;
-    
+
     if (!value && state.activeVCCValue && !init) {
       setValue(state.activeVCCValue);
       setInit(true);
+      return;
     }
 
     if (value !== state.activeVCCValue) {
@@ -67,7 +68,10 @@ const ImagePicker = () => {
         },
       });
     }
-  }, [dispatch, init, state, value])
+  }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
+
+  console.log('STATE', state.activeVCCType, value, state.activeVCCValue);
+
 
   return (
     <TextPickerWrapper style={{ isActive: state.activeVCCType === 'text' }}>
@@ -77,7 +81,7 @@ const ImagePicker = () => {
         <CloseIcon />
       </CloseButton>
       {
-        state.activeVCCType === 'text' &&
+        (state.activeVCCType === 'text' && value) &&
         <Input
           onChange={(e) => setValue(e.target.value)}
           type={'text'}
@@ -88,4 +92,4 @@ const ImagePicker = () => {
   );
 };
 
-export default ImagePicker;
+export default TextPicker;
