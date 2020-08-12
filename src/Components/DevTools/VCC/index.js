@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ImageVCC from './ImageVCC';
-import TextVCC from './TextVCC';
+import BooleanVCC from './Boolean';
+import ImageVCC from './Image';
+import TextVCC from './Text';
 
 const Container = styled.div`
   display: flex;
@@ -11,11 +12,12 @@ const Container = styled.div`
   justify-content: flex-start;
   height: 50%;
   width: 100%;
-  overflow: hidden;;
+  overflow: hidden;
 `;
 
 const VCCRouter = () => (
   <Container>
+    <BooleanVCC />
     <ImageVCC />
     <TextVCC />
   </Container>

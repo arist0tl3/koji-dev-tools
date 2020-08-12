@@ -1,21 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Switch } from 'antd';
 
 import Header from '../../Common/Header';
 import CloseIcon from '../../../SVGS/Close';
 
 import { Context } from '../../../Store';
 
-const TextPickerWrapper = styled.div`
+const BooleanVCCWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
   bottom: ${({ style: { isActive } }) => isActive ? '0' : '-100%'};
   transition: bottom 0.3s ease-in-out;
-`;
-
-const Input = styled.input`
 `;
 
 const CloseButton = styled.div`
@@ -31,7 +29,7 @@ const CloseButton = styled.div`
   }
 `;
 
-const TextPicker = () => {
+const BooleanVCC = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
   const [init, setInit] = useState(false);
@@ -44,7 +42,7 @@ const TextPicker = () => {
   };
 
   useEffect(() => {
-    if (state.activeVCCType !== 'text') return;
+    if (state.activeVCCType !== 'boolean') return;
 
     if (!value && state.activeVCCValue && !init) {
       setValue(state.activeVCCValue);
@@ -70,26 +68,19 @@ const TextPicker = () => {
     }
   }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
 
-  console.log('STATE', state.activeVCCType, value, state.activeVCCValue);
-
-
   return (
-    <TextPickerWrapper style={{ isActive: state.activeVCCType === 'text' }}>
+    <BooleanVCCWrapper style={{ isActive: state.activeVCCType === 'boolean' }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
         <CloseIcon />
       </CloseButton>
       {
-        (state.activeVCCType === 'text' && value) &&
-        <Input
-          onChange={(e) => setValue(e.target.value)}
-          type={'text'}
-          value={value}
-        />
+        (state.activeVCCType === 'boolean' && value) &&
+        <Switch />
       }
-    </TextPickerWrapper>
+    </BooleanVCCWrapper>
   );
 };
 
-export default TextPicker;
+export default BooleanVCC;

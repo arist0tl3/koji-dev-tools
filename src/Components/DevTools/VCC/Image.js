@@ -6,7 +6,7 @@ import CloseIcon from '../../../SVGS/Close';
 
 import { Context } from '../../../Store';
 
-const ImagePickerWrapper = styled.div`
+const ImageVCCWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
@@ -43,7 +43,7 @@ const CloseButton = styled.div`
   }
 `;
 
-const ImagePicker = () => {
+const ImageVCC = () => {
   const [state, dispatch] = useContext(Context);
 
   const sources = [
@@ -78,7 +78,7 @@ const ImagePicker = () => {
   };
 
   return (
-    <ImagePickerWrapper style={{ isActive: state.activeVCCType === 'image' }}>
+    <ImageVCCWrapper style={{ isActive: state.activeVCCType === 'image' }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
@@ -93,8 +93,8 @@ const ImagePicker = () => {
           ))
         }
       </ImagesWrapper>
-    </ImagePickerWrapper>
+    </ImageVCCWrapper>
   );
 };
 
-export default ImagePicker;
+export default ImageVCC;
