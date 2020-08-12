@@ -9,7 +9,11 @@ const TextLink = styled.span`
   cursor: pointer;
   display: flex;
   min-height: 32px;
-  text-decoration: underline;
+  font-size: 16px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const RefreshLink = () => {
