@@ -15,7 +15,7 @@ import { Context } from '../../Store';
 const Tools = styled.div`
   position: relative;
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   max-width: 1440px;
   background: #000000;
   display: flex;
@@ -104,7 +104,7 @@ const DevTools = () => {
   const [logs, setLogs] = useState([]);
 
   const setVCC = ({ type, path, currentValue, name }) => {
-    console.log('SETTING', type, path, currentValue, name);
+    console.log('SETTING VCC:', type, path, currentValue, name);
     dispatch({
       type: 'SET_ACTIVE_VCC_TYPE',
       payload: type,
@@ -125,7 +125,6 @@ const DevTools = () => {
 
   useEffect(() => {
     const receiveMessage = ({ data = {} }) => {
-      console.log('DATA', data);
       const {
         // attributes,
         vccValues = {},
@@ -176,7 +175,7 @@ const DevTools = () => {
       if (_type === 'KojiPreview.PresentControl' && path.length) {
         // Get the current value so we can populate the input
         const currentValue = immutable.get(state.vccValues, path.join('.'));
-        console.log('currentValue', currentValue);
+        console.log('CURRENT VALUE: ', currentValue);
 
         // Attempt to drill down to the scope/field
         const [scopeKey, fieldKey, ...rest] = path;
@@ -192,13 +191,18 @@ const DevTools = () => {
 
         // Take the currentType and attempt to resolve nested paths
         let { name, type: currentType } = field;
+        console.log('FIELD:', field);
+
+        console.log('PATH:', rest);
 
         rest.forEach((pathElem) => {
           // If the pathElem is a number, we assume we are looking at an array
           if (isNumber(pathElem)) {
+            console.log('PATH ELEM:', pathElem);
             // Are we looking at an object?
             if (currentType.includes('<')) {
-              const objectType = currentType.split('<')[1].slice(0, -1);
+              const objectType = currentType.split('<')[1].slice(0, -3);
+              console.log('OBJECT TYPE:', objectType);
               if (field.typeOptions && field.typeOptions[objectType]) {
                 currentType = field.typeOptions[objectType];
               }
@@ -214,6 +218,8 @@ const DevTools = () => {
             }
           }
         });
+
+        console.log('RESOLVED TYPE:', currentType);
 
         // If it is a supported VCC type, we can render it
         // otherwise, we'll just render a text input
