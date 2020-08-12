@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as immutable from 'object-path-immutable';
+import LoadingOverlay from 'react-loading-overlay';
+
 import isNumber from '../../utils/isNumber';
 
 import Controls from './Controls';
@@ -61,10 +63,42 @@ const Player = styled.iframe`
   outline: 0;
 `;
 
+const StyledLoader = styled(LoadingOverlay)`
+  .MyLoader_overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+`
+
 const supportedVCCTypes = ['text', 'textarea', 'image'];
+
+const takingTooLongMessage = (
+  <div>
+    <div>{'This is taking a while... Make sure you have added the following snippet to your template:'}</div>
+    <div>
+      <pre>
+        {`
+          window.parent.postMessage({
+            vccValues: instantRemixing.get([]),
+          }, '*');
+        `}
+      </pre>
+    </div>
+  </div>
+);
 
 const DevTools = () => {
   const [state, dispatch] = useContext(Context);
+
+  const [isTakingTooLong, setIsTakingTooLong] = useState(false);
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (!state.vccValues || Object.keys(state.vccValues).length === 0) {
+        setIsTakingTooLong(true);
+      }
+    }, 5000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [state.vccValues]);
 
   const iFrameRef = useRef(null);
   const [logs, setLogs] = useState([]);
@@ -106,7 +140,6 @@ const DevTools = () => {
 
       // Handle the init value (dev needs to add custom function to template)
       if (Object.keys(vccValues).length) {
-        console.log('v', vccValues);
         dispatch({
           type: 'SET_VCC_VALUES',
           payload: vccValues,
@@ -198,50 +231,6 @@ const DevTools = () => {
             path,
           });
         }
-
-
-
-
-        // const { name, type } = field;
-        // if (!type) return;
-
-        // console.log('TYPE', type);
-
-        // if (type.endsWith('[]')) {
-        //   const arrayOf = type.slice(0, -2);
-        //   console.log('arrayOf', arrayOf);
-        //   if ((arrayOf.includes('<') && arrayOf.endsWith('>'))) {
-        //     const objectType = arrayOf.split('<')[1].slice(0, -1);
-        //     console.log('objectType', objectType);
-        //   }
-        //   return;
-        // }
-
-        // if ((type.includes('<') && type.endsWith('>'))) {
-        //   console.log('object');
-        //   return;
-        // }
-
-        // if (['image', 'textarea', 'sound', 'color', 'boolean', 'range', 'select', 'secret', 'file'].includes(type)) {
-          
-        // } else {
-        //   dispatch({
-        //     type: 'SET_ACTIVE_VCC_TYPE',
-        //     payload: 'text',
-        //   });
-        //   dispatch({
-        //     type: 'SET_ACTIVE_VCC_PATH',
-        //     payload: path,
-        //   });
-        //   dispatch({
-        //     type: 'SET_ACTIVE_VCC_NAME',
-        //     payload: name,
-        //   });
-        //   dispatch({
-        //     type: 'SET_ACTIVE_VCC_VALUE',
-        //     payload: currentValue,
-        //   });
-        // }
       }
 
       return setLogs(oldLogs => [...oldLogs, data]);
@@ -266,27 +255,34 @@ const DevTools = () => {
   }, [dispatch]);
 
   return (
-    <Tools>
-      <Panel>
-        <Controls />
-      </Panel>
-      <PlayerContainer>
-        <PlayerWrapper style={{ mode: state.deviceMode }}>
-          <Overlay />
-          <Player
-            crossOrigin={'anonymous'}
-            height={700}
-            ref={iFrameRef}
-            src={state.appURL}
-            width={700}
-          />
-        </PlayerWrapper>
-      </PlayerContainer>
-      <Panel>
-        <Logs logs={logs} />
-        <VCCRouter />
-      </Panel>
-    </Tools>
+    <StyledLoader
+      active={!state.vccValues || Object.keys(state.vccValues).length === 0}
+      classNamePrefix={'MyLoader_'}
+      spinner
+      text={isTakingTooLong ? takingTooLongMessage : null}
+    >
+      <Tools>
+        <Panel>
+          <Controls />
+        </Panel>
+        <PlayerContainer>
+          <PlayerWrapper style={{ mode: state.deviceMode }}>
+            <Overlay />
+            <Player
+              crossOrigin={'anonymous'}
+              height={700}
+              ref={iFrameRef}
+              src={state.appURL}
+              width={700}
+            />
+          </PlayerWrapper>
+        </PlayerContainer>
+        <Panel>
+          <Logs logs={logs} />
+          <VCCRouter />
+        </Panel>
+      </Tools>
+    </StyledLoader>
   );
 };
 
