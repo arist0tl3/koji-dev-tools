@@ -8,7 +8,7 @@ import { Context } from '../../Store';
 const Router = () => {
   const [state] = useContext(Context);
 
-  if (!state.appURL) {
+  if (!state.appURL && !state.appIsRefreshing) {
     return (
       <Welcome />
     );

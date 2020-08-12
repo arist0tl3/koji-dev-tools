@@ -6,6 +6,7 @@ import AppMetadata from './AppMetadata';
 import DevicePicker from './DevicePicker';
 import Header from '../../Common/Header';
 import Inspector from './Inspector';
+import RefreshLink from './RefreshLink';
 import RemixSwitch from './RemixSwitch';
 
 import { Context } from '../../../Store';
@@ -29,6 +30,7 @@ const Controls = () => {
       <Header>{'Template Options'}</Header>
       <RemixSwitch />
       <DevicePicker />
+      <RefreshLink />
       <StyledDivider />
       {
         !state.isRemixing &&

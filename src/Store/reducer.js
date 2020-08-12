@@ -7,6 +7,11 @@ const reducer = (state, action) => {
         ...state,
         appURL: action.payload,
       };
+    case 'SET_APP_IS_REFRESHING':
+      return {
+        ...state,
+        appIsRefreshing: action.payload,
+      };
     case 'SET_DEVICE_MODE':
       return {
         ...state,
@@ -23,6 +28,7 @@ const reducer = (state, action) => {
         activeVCCName: null,
         activeVCCPath: null,
         activeVCCType: null,
+        activeVCCValue: null,
       };
     case 'SET_ACTIVE_VCC_TYPE':
       return {

@@ -7,6 +7,7 @@ const initialState = {
   activeVCCPath: null,
   activeVCCType: null,
   activeVCCValue: null,
+  appIsRefreshing: false,
   appURL: null,
   deviceMode: 'desktop',
   isRemixing: false,

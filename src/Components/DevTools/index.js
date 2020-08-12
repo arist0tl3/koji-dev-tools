@@ -148,10 +148,10 @@ const DevTools = () => {
         // Toggle the remix mode on by default
         // Note: We can't just set the init state bc the template expects
         // a message
-        return dispatch({
-          type: 'SET_IS_REMIXING',
-          payload: true,
-        });
+        // return dispatch({
+        //   type: 'SET_IS_REMIXING',
+        //   payload: true,
+        // });
       }
 
       if (_type === 'KojiPreview.SetValue' && newValue && path.length) {
@@ -176,6 +176,7 @@ const DevTools = () => {
       if (_type === 'KojiPreview.PresentControl' && path.length) {
         // Get the current value so we can populate the input
         const currentValue = immutable.get(state.vccValues, path.join('.'));
+        console.log('currentValue', currentValue);
 
         // Attempt to drill down to the scope/field
         const [scopeKey, fieldKey, ...rest] = path;
