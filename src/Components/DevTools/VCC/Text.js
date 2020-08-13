@@ -44,7 +44,7 @@ const TextVCC = () => {
   };
 
   useEffect(() => {
-    if (state.activeVCCType !== 'text') return;
+    if (state.activeVCCType !== 'text' || !state.activeVCCPath) return;
 
     if (!value && state.activeVCCValue && !init) {
       setValue(state.activeVCCValue);

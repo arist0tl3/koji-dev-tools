@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import BooleanVCC from './Boolean';
+import CustomVCC from './Custom';
 import ImageVCC from './Image';
 import TextVCC from './Text';
 
@@ -18,6 +19,7 @@ const Container = styled.div`
 const VCCRouter = () => (
   <Container>
     <BooleanVCC />
+    <CustomVCC />
     <ImageVCC />
     <TextVCC />
   </Container>

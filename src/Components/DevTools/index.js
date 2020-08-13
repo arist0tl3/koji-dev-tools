@@ -69,7 +69,7 @@ const StyledLoader = styled(LoadingOverlay)`
   }
 `
 
-const supportedVCCTypes = ['text', 'textarea', 'image'];
+const supportedVCCTypes = ['text', 'textarea', 'image', 'boolean'];
 
 const takingTooLongMessage = (
   <div>
@@ -190,40 +190,55 @@ const DevTools = () => {
         if (!field) return;
 
         // Take the currentType and attempt to resolve nested paths
-        let { name, type: currentType } = field;
+        let { name, type: currentType, typeOptions } = field;
         console.log('FIELD:', field);
 
         console.log('PATH:', rest);
 
-        rest.forEach((pathElem) => {
-          // If the pathElem is a number, we assume we are looking at an array
-          if (isNumber(pathElem)) {
-            console.log('PATH ELEM:', pathElem);
-            // Are we looking at an object?
-            if (currentType.includes('<')) {
-              const objectType = currentType.split('<')[1].slice(0, -3);
-              console.log('OBJECT TYPE:', objectType);
-              if (field.typeOptions && field.typeOptions[objectType]) {
-                currentType = field.typeOptions[objectType];
+        if (rest.length > 0) {
+          rest.forEach((pathElem) => {
+            // If the pathElem is a number, we assume we are looking at an array
+            if (isNumber(pathElem)) {
+              console.log('PATH ELEM:', pathElem);
+              // Are we looking at an object?
+              if (currentType.includes('<')) {
+                const objectType = currentType.split('<')[1].slice(0, -3);
+                console.log('OBJECT TYPE:', objectType);
+                if (field.typeOptions && field.typeOptions[objectType]) {
+                  currentType = field.typeOptions[objectType];
+                }
+              } else {
+                // If we are looking at an array of type, then we can just strip
+                // the brackets, e.g., image[]
+                currentType = currentType.splice(0, -2);
               }
             } else {
-              // If we are looking at an array of type, then we can just strip
-              // the brackets, e.g., image[]
-              currentType = currentType.splice(0, -2);
+              // Continue into the object and look for a type
+              if (currentType[pathElem] && currentType[pathElem].type) {
+                currentType = currentType[pathElem].type;
+
+                if (currentType[pathElem] && currentType[pathElem].typeOptions) {
+                  if (currentType[pathElem].typeOptions.defaultSource) {
+                    currentType = `https://${currentType[pathElem].typeOptions.defaultSource}.koji-vccs.com`;
+                  }
+                }
+              }
             }
-          } else {
-            // Continue into the object and look for a type
-            if (currentType[pathElem] && currentType[pathElem].type) {
-              currentType = currentType[pathElem].type;
+          });
+        } else {
+          // Look for defaultSource
+          if (typeOptions) {
+            if (typeOptions.defaultSource) {
+              currentType = `https://${typeOptions.defaultSource}.koji-vccs.com`;
             }
           }
-        });
+        }
 
         console.log('RESOLVED TYPE:', currentType);
 
         // If it is a supported VCC type, we can render it
         // otherwise, we'll just render a text input
-        if (supportedVCCTypes.includes(currentType)) {
+        if (supportedVCCTypes.includes(currentType) || currentType.includes('http')) {
           setVCC({
             type: currentType,
             name,

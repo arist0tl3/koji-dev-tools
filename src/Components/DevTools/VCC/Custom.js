@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Switch } from 'antd';
 
 import Header from '../../Common/Header';
 import CloseIcon from '../../../SVGS/Close';
 
 import { Context } from '../../../Store';
 
-const BooleanVCCWrapper = styled.div`
+const CustomVCCWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -29,11 +28,19 @@ const CloseButton = styled.div`
   }
 `;
 
-const BooleanVCC = () => {
+const Player = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+`;
+
+const CustomVCC = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
   const [init, setInit] = useState(false);
 
+  const customVCCIFrameRef = useRef(null);
 
   const handleVCCClose = () => {
     dispatch({
@@ -42,7 +49,7 @@ const BooleanVCC = () => {
   };
 
   useEffect(() => {
-    if (state.activeVCCType !== 'boolean' || !state.activeVCCPath) return;
+    if (!state.activeVCCType || !state.activeVCCType.includes('http') || !state.activeVCCPath) return;
 
     if (!value && state.activeVCCValue && !init) {
       setValue(state.activeVCCValue);
@@ -69,18 +76,24 @@ const BooleanVCC = () => {
   }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
 
   return (
-    <BooleanVCCWrapper style={{ isActive: state.activeVCCType === 'boolean' }}>
+    <CustomVCCWrapper style={{ isActive: state.activeVCCType && state.activeVCCType.includes('http') }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
         <CloseIcon />
       </CloseButton>
       {
-        (state.activeVCCType === 'boolean' && (typeof value === 'boolean')) &&
-        <Switch />
+        (state.activeVCCType && state.activeVCCType.includes('http') && value) &&
+        <Player
+          crossOrigin={'anonymous'}
+          height={700}
+          ref={customVCCIFrameRef}
+          src={state.activeVCCType}
+          width={700}
+        />
       }
-    </BooleanVCCWrapper>
+    </CustomVCCWrapper>
   );
 };
 
-export default BooleanVCC;
+export default CustomVCC;
