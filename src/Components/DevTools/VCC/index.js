@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+
+import { Context } from '../../../Store';
 
 import BooleanVCC from './Boolean';
 import CustomVCC from './Custom';
@@ -16,13 +18,21 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const VCCRouter = () => (
-  <Container>
-    <BooleanVCC />
-    <CustomVCC />
-    <ImageVCC />
-    <TextVCC />
-  </Container>
-);
+const VCCRouter = () => {
+  const [state] = useContext(Context);
+
+  if (!state.isRemixing) return (
+    <Container />
+  );
+
+  return (
+    <Container>
+      {state.activeVCCType === 'boolean' && <BooleanVCC />}
+      {state.activeVCCType && state.activeVCCType.includes('http') && <CustomVCC />}
+      {state.activeVCCType === 'image' && <ImageVCC />}
+      {state.activeVCCType === 'text' && <TextVCC />}
+    </Container>
+  );
+};
 
 export default VCCRouter;

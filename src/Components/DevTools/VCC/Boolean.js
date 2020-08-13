@@ -12,7 +12,7 @@ const BooleanVCCWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  bottom: ${({ style: { isActive } }) => isActive ? '0' : '-100%'};
+  bottom: ${({ style: { isReady } }) => isReady ? '0' : '-100%'};
   transition: bottom 0.3s ease-in-out;
 `;
 
@@ -32,23 +32,26 @@ const CloseButton = styled.div`
 const BooleanVCC = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
-  const [init, setInit] = useState(false);
-
+  const [isReady, setIsReady] = useState(false);
 
   const handleVCCClose = () => {
-    dispatch({
-      type: 'RESET_VCC',
-    });
+    setIsReady(false);
+    window.setTimeout(() => {
+      dispatch({
+        type: 'RESET_VCC',
+      });
+    }, 300);
   };
 
   useEffect(() => {
-    if (state.activeVCCType !== 'boolean' || !state.activeVCCPath) return;
-
-    if (!value && state.activeVCCValue && !init) {
+    if ((!value || typeof value !== 'boolean') && (typeof state.activeVCCValue === 'boolean') && !isReady) {
       setValue(state.activeVCCValue);
-      setInit(true);
-      return;
+      window.setTimeout(() => setIsReady(true), 0);
     }
+  }, [value, state.activeVCCValue, isReady]);
+
+  useEffect(() => {
+    if (!isReady) return;
 
     if (value !== state.activeVCCValue) {
       state.postMessage({
@@ -66,19 +69,19 @@ const BooleanVCC = () => {
         },
       });
     }
-  }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
+  }, [dispatch, state.activeVCCValue, value]);
 
   return (
-    <BooleanVCCWrapper style={{ isActive: state.activeVCCType === 'boolean' }}>
+    <BooleanVCCWrapper style={{ isReady }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
         <CloseIcon />
       </CloseButton>
-      {
-        (state.activeVCCType === 'boolean' && (typeof value === 'boolean')) &&
-        <Switch />
-      }
+      <Switch
+        value={value}
+        onChange={() => setValue(!value)}
+      />
     </BooleanVCCWrapper>
   );
 };

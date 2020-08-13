@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Header from '../../Common/Header';
@@ -8,10 +8,11 @@ import { Context } from '../../../Store';
 
 const CustomVCCWrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
-  bottom: ${({ style: { isActive } }) => isActive ? '0' : '-100%'};
+  bottom: ${({ style: { isReady } }) => isReady ? '0' : '-100%'};
   transition: bottom 0.3s ease-in-out;
 `;
 
@@ -38,24 +39,26 @@ const Player = styled.iframe`
 const CustomVCC = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
-  const [init, setInit] = useState(false);
-
-  const customVCCIFrameRef = useRef(null);
+  const [isReady, setIsReady] = useState(false);
 
   const handleVCCClose = () => {
-    dispatch({
-      type: 'RESET_VCC',
-    });
+    setIsReady(false);
+    window.setTimeout(() => {
+      dispatch({
+        type: 'RESET_VCC',
+      });
+    }, 300);
   };
 
   useEffect(() => {
-    if (!state.activeVCCType || !state.activeVCCType.includes('http') || !state.activeVCCPath) return;
-
-    if (!value && state.activeVCCValue && !init) {
+    if (!value && state.activeVCCValue && !isReady) {
       setValue(state.activeVCCValue);
-      setInit(true);
-      return;
+      window.setTimeout(() => setIsReady(true), 0);
     }
+  }, [value, state.activeVCCValue, isReady]);
+
+  useEffect(() => {
+    if (!isReady) return;
 
     if (value !== state.activeVCCValue) {
       state.postMessage({
@@ -73,10 +76,10 @@ const CustomVCC = () => {
         },
       });
     }
-  }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
+  }, [dispatch, state.activeVCCValue, value]);
 
   return (
-    <CustomVCCWrapper style={{ isActive: state.activeVCCType && state.activeVCCType.includes('http') }}>
+    <CustomVCCWrapper style={{ isReady }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
@@ -87,7 +90,6 @@ const CustomVCC = () => {
         <Player
           crossOrigin={'anonymous'}
           height={700}
-          ref={customVCCIFrameRef}
           src={state.activeVCCType}
           width={700}
         />

@@ -104,7 +104,8 @@ const DevTools = () => {
   const [logs, setLogs] = useState([]);
 
   const setVCC = ({ type, path, currentValue, name }) => {
-    console.log('SETTING VCC:', type, path, currentValue, name);
+    if (!state.isRemixing) return;
+
     dispatch({
       type: 'SET_ACTIVE_VCC_TYPE',
       payload: type,
@@ -127,9 +128,11 @@ const DevTools = () => {
     const receiveMessage = ({ data = {} }) => {
       const {
         // attributes,
+        event,
         vccValues = {},
         newValue,
         path,
+        payload,
         source = '',
         _type,
       } = data;
@@ -153,6 +156,29 @@ const DevTools = () => {
         // });
       }
 
+      if (_type === 'KOJI_CUSTOM_VCC') {
+        // Pass the value through if we have a current vcc
+        if (event === 'onChange' && payload) {
+          const { value } = payload;
+          if (value) {
+            state.postMessage({
+              event: 'KojiPreview.DidChangeVcc',
+              path: state.activeVCCPath,
+              newValue: value,
+            });
+
+            // Also update our local store so we can inspect =)
+            dispatch({
+              type: 'UPDATE_VCC_VALUE',
+              payload: {
+                path: state.activeVCCPath,
+                newValue: value,
+              },
+            });
+          }
+        }
+      }
+
       if (_type === 'KojiPreview.SetValue' && newValue && path.length) {
         // If the template triggered a set value, we just return the value
         // as if it were written
@@ -173,9 +199,9 @@ const DevTools = () => {
       }
 
       if (_type === 'KojiPreview.PresentControl' && path.length) {
+
         // Get the current value so we can populate the input
         const currentValue = immutable.get(state.vccValues, path.join('.'));
-        console.log('CURRENT VALUE: ', currentValue);
 
         // Attempt to drill down to the scope/field
         const [scopeKey, fieldKey, ...rest] = path;
@@ -191,19 +217,14 @@ const DevTools = () => {
 
         // Take the currentType and attempt to resolve nested paths
         let { name, type: currentType, typeOptions } = field;
-        console.log('FIELD:', field);
-
-        console.log('PATH:', rest);
 
         if (rest.length > 0) {
           rest.forEach((pathElem) => {
             // If the pathElem is a number, we assume we are looking at an array
             if (isNumber(pathElem)) {
-              console.log('PATH ELEM:', pathElem);
               // Are we looking at an object?
               if (currentType.includes('<')) {
                 const objectType = currentType.split('<')[1].slice(0, -3);
-                console.log('OBJECT TYPE:', objectType);
                 if (field.typeOptions && field.typeOptions[objectType]) {
                   currentType = field.typeOptions[objectType];
                 }
@@ -233,8 +254,6 @@ const DevTools = () => {
             }
           }
         }
-
-        console.log('RESOLVED TYPE:', currentType);
 
         // If it is a supported VCC type, we can render it
         // otherwise, we'll just render a text input

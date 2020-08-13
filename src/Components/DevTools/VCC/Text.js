@@ -11,7 +11,7 @@ const TextVCCWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  bottom: ${({ style: { isActive } }) => isActive ? '0' : '-100%'};
+  bottom: ${({ style: { isReady } }) => isReady ? '0' : '-100%'};
   transition: bottom 0.3s ease-in-out;
 `;
 
@@ -34,23 +34,26 @@ const CloseButton = styled.div`
 const TextVCC = () => {
   const [state, dispatch] = useContext(Context);
   const [value, setValue] = useState(null);
-  const [init, setInit] = useState(false);
-
+  const [isReady, setIsReady] = useState(false);
 
   const handleVCCClose = () => {
-    dispatch({
-      type: 'RESET_VCC',
-    });
+    setIsReady(false);
+    window.setTimeout(() => {
+      dispatch({
+        type: 'RESET_VCC',
+      });
+    }, 300);
   };
 
   useEffect(() => {
-    if (state.activeVCCType !== 'text' || !state.activeVCCPath) return;
-
-    if (!value && state.activeVCCValue && !init) {
+    if (!value && state.activeVCCValue && !isReady) {
       setValue(state.activeVCCValue);
-      setInit(true);
-      return;
+      window.setTimeout(() => setIsReady(true), 0);
     }
+  }, [value, state.activeVCCValue, isReady]);
+
+  useEffect(() => {
+    if (!isReady) return;
 
     if (value !== state.activeVCCValue) {
       state.postMessage({
@@ -68,23 +71,20 @@ const TextVCC = () => {
         },
       });
     }
-  }, [dispatch, init, state.activeVCCType, state.activeVCCValue, value]);
+  }, [dispatch, state.activeVCCValue, value]);
 
   return (
-    <TextVCCWrapper style={{ isActive: state.activeVCCType === 'text' }}>
+    <TextVCCWrapper style={{ isReady }}>
       <Header>{`Name: ${state.activeVCCName || ''}`}</Header>
       <Header>{`Type: ${state.activeVCCType || ''}`}</Header>
       <CloseButton onClick={handleVCCClose}>
         <CloseIcon />
       </CloseButton>
-      {
-        (state.activeVCCType === 'text' && value) &&
-        <Input
-          onChange={(e) => setValue(e.target.value)}
-          type={'text'}
-          value={value}
-        />
-      }
+      <Input
+        onChange={(e) => setValue(e.target.value)}
+        type={'text'}
+        value={value}
+      />
     </TextVCCWrapper>
   );
 };
