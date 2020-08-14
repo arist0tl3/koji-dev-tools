@@ -15,7 +15,7 @@ This project aims to make debugging and working locally easier for your Koji tem
 - Simulate IAP flow
 - Simulate Feed Debug
 - Automatic warnings about misconfigured entitlements
-
+- Support for displaying objects/arrays in VCC simulator
 
 ## Prerequisites
 
