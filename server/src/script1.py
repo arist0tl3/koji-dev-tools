@@ -10,6 +10,8 @@ def trim(im):
     bbox = diff.getbbox()
     if bbox:
         return im.crop(bbox)
+    else:
+        return im
 
 im = Image.open(path + "/example.jpg")
 im = trim(im)
