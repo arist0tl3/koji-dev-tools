@@ -59,7 +59,7 @@ const Screenshots = () => {
         loading={isProcessing}
         onClick={handleScreenshotClick}
       >
-          {'Generate Screenshot'}
+          {'Generate Screenshot (Beta)'}
       </StyledButton>
       {/*<StyledButton>{'Generate Share Card'}</StyledButton>*/}
     </Container>
