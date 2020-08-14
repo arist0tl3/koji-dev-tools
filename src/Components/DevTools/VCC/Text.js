@@ -56,10 +56,18 @@ const TextVCC = () => {
     if (!isReady) return;
 
     if (value !== state.activeVCCValue) {
-      state.postMessage({
+      const message = {
         event: 'KojiPreview.DidChangeVcc',
         path: state.activeVCCPath,
         newValue: value,
+      };
+
+      state.postMessage(message);
+
+      // Log the message
+      dispatch({
+        type: 'ADD_MESSAGE_LOG',
+        payload: message,
       });
 
       // Also update our local store so we can inspect =)

@@ -161,10 +161,18 @@ const DevTools = () => {
         if (event === 'onChange' && payload) {
           const { value } = payload;
           if (value) {
-            state.postMessage({
+            const message = {
               event: 'KojiPreview.DidChangeVcc',
               path: state.activeVCCPath,
               newValue: value,
+            };
+
+            state.postMessage(message);
+
+            // Log the message
+            dispatch({
+              type: 'ADD_MESSAGE_LOG',
+              payload: message,
             });
 
             // Also update our local store so we can inspect =)
@@ -182,10 +190,18 @@ const DevTools = () => {
       if (_type === 'KojiPreview.SetValue' && newValue && path.length) {
         // If the template triggered a set value, we just return the value
         // as if it were written
-        state.postMessage({
+        const message = {
           event: 'KojiPreview.DidChangeVcc',
           path,
           newValue,
+        };
+
+        state.postMessage(message);
+
+        // Log the message
+        dispatch({
+          type: 'ADD_MESSAGE_LOG',
+          payload: message,
         });
 
         // Also update our local store so we can inspect =)

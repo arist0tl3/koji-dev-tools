@@ -22,6 +22,11 @@ const reducer = (state, action) => {
         ...state,
         postMessage: action.payload,
       };
+    case 'ADD_MESSAGE_LOG':
+      return {
+        ...state,
+        messageLog: [...state.messageLog, action.payload],
+      };
     case 'RESET_VCC':
       return {
         ...state,

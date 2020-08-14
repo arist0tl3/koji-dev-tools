@@ -11,6 +11,7 @@ const initialState = {
   appURL: null,
   deviceMode: 'desktop',
   isRemixing: false,
+  messageLog: [],
   postMessage() {},
   profileImage: 'https://jiro-profile-pictures.imgix.net/4784537361_1596432327276.com/a-/AOh14GjTFPyKDB0LBPOJwNYMwui4lPkNvHkru3bAwP7_lA?w=126',
   tags: 'these, are, tags',

@@ -55,10 +55,18 @@ const ImageVCC = () => {
   if (state.activeVCCValue) sources.unshift(state.activeVCCValue);
 
   const handleImageClick = (src) => {
-    state.postMessage({
+    const message = {
       event: 'KojiPreview.DidChangeVcc',
       path: state.activeVCCPath,
       newValue: src,
+    };
+    
+    state.postMessage(message);
+
+    // Log the message
+    dispatch({
+      type: 'ADD_MESSAGE_LOG',
+      payload: message,
     });
 
     // Also update our local store so we can inspect =)
