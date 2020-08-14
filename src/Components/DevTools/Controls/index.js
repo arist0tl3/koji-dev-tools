@@ -8,6 +8,7 @@ import Header from '../../Common/Header';
 import Inspector from './Inspector';
 import RefreshLink from './RefreshLink';
 import RemixSwitch from './RemixSwitch';
+import Screenshots from './Screenshots';
 
 import { Context } from '../../../Store';
 
@@ -34,7 +35,11 @@ const Controls = () => {
       <StyledDivider />
       {
         !state.isRemixing &&
-        <AppMetadata />
+        <>
+          <AppMetadata />
+          <StyledDivider />
+          <Screenshots />
+        </>
       }
       {
         state.isRemixing &&
