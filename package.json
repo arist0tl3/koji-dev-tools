@@ -19,6 +19,9 @@
     "styled-components": "^5.1.1"
   },
   "scripts": {
+    "install-all": "run-s install-server install-client",
+    "install-server": "cd server && yarn && pip install Pillow && cd ..",
+    "install-client": "yarn",
     "start": "run-p start-server start-client",
     "start-client": "react-scripts start",
     "start-server": "yarn --cwd ./server start",

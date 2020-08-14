@@ -27,3 +27,4 @@ yarn-error.log*
 
 # tempfiles
 /server/src/example.jpg
+/server/src/output.png

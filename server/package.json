@@ -19,7 +19,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "nodemon": "^2.0.4",
-    "puppeteer": "^5.2.1"
+    "puppeteer": "^5.2.1",
+    "python-shell": "^2.0.1"
   },
   "devDependencies": {
     "eslint": "^7.6.0",

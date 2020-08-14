@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer';
 import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import { PythonShell } from 'python-shell';
 
 const port = 3001;
 
@@ -64,7 +65,17 @@ app.post('/', async (req, res) => {
 
     await browser.close();
 
-    res.sendFile(path.join(__dirname, 'example.jpg'));
+    PythonShell.run(
+      path.join(__dirname, 'script1.py'),
+      {
+        args: [__dirname],
+      },
+      (err) => {
+        if (err) throw err;
+      },
+    );
+
+    res.sendFile(path.join(__dirname, 'output.png'));
   } catch (err) {
     console.log('err', err);
     res.json(err);

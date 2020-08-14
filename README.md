@@ -9,9 +9,13 @@ This project aims to make debugging and working locally easier for your Koji tem
 - Logs of postMessage communication between windows
 - Simulated VCC interactions
 
+## Prerequisites
+
+You will need to have Python and pip installed in order to use the automated scripts and screenshot tools.
+
 ## Installation
 
-Clone this repo, and run `yarn` to install the packages
+Clone this repo, and run `yarn install-all` to install the packages
 
 ## Usage
 

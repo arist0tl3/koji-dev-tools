@@ -46,7 +46,7 @@ const Screenshots = () => {
     const url = window.URL.createObjectURL(new Blob([res.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'screenshot.jpg'); //or any other extension
+    link.setAttribute('download', 'screenshot.png'); //or any other extension
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -61,7 +61,7 @@ const Screenshots = () => {
       >
           {'Generate Screenshot'}
       </StyledButton>
-      <StyledButton>{'Generate Share Card'}</StyledButton>
+      {/*<StyledButton>{'Generate Share Card'}</StyledButton>*/}
     </Container>
   )
 };
