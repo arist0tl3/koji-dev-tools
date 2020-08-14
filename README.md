@@ -8,6 +8,14 @@ This project aims to make debugging and working locally easier for your Koji tem
 - VCC value explorer with live updates
 - Logs of postMessage communication between windows
 - Simulated VCC interactions
+- Screenshot (BETA)
+
+## Roadmap
+
+- Simulate IAP flow
+- Simulate Feed Debug
+- Automatic warnings about misconfigured entitlements
+
 
 ## Prerequisites
 
