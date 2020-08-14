@@ -71,11 +71,13 @@ app.post('/', async (req, res) => {
         args: [__dirname],
       },
       (err) => {
-        if (err) throw err;
+        if (err) {
+          throw err;
+        } else {
+          res.sendFile(path.join(__dirname, 'output.png'));
+        }
       },
     );
-
-    res.sendFile(path.join(__dirname, 'output.png'));
   } catch (err) {
     console.log('err', err);
     res.json(err);
